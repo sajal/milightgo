@@ -31,6 +31,7 @@ func (c *Controller) send(data []byte) error {
 	if err != nil {
 		return err
 	}
+	time.Sleep(time.Millisecond * 100) //Introduce 100ms delay between commands to reduce chance of packet loss
 	return nil
 }
 
@@ -148,7 +149,7 @@ func (c *Controller) SetBrightness(zone int, brightness int) error {
 	}
 	//Dim it completely
 	for i := 0; i < 10; i++ {
-		time.Sleep(time.Millisecond * 100)
+		//time.Sleep(time.Millisecond * 100)
 		err := c.ZoneDim(zone)
 		if err != nil {
 			return err
@@ -156,7 +157,7 @@ func (c *Controller) SetBrightness(zone int, brightness int) error {
 	}
 	//Now bring it up one step at a time
 	for i := 0; i < brightness; i++ {
-		time.Sleep(time.Millisecond * 100)
+		//time.Sleep(time.Millisecond * 100)
 		err := c.ZoneBright(zone)
 		if err != nil {
 			return err
