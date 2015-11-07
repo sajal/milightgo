@@ -1,8 +1,9 @@
+package milight
+
 // Currently only works for White lights cause thats what I got.
 // Special thanks to http://www.wifiledlamp.com/service/applamp-api/ for showing me the codes to start with.
 // Also http://wifilights.co.nz/blogs/wifi-lights-blog/13851301-open-source-api
 
-package milight
 
 import (
 	"errors"
