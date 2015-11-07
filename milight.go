@@ -4,10 +4,10 @@ package milight
 // Special thanks to http://www.wifiledlamp.com/service/applamp-api/ for showing me the codes to start with.
 // Also http://wifilights.co.nz/blogs/wifi-lights-blog/13851301-open-source-api
 
-
 import (
 	"errors"
 	"net"
+	"time"
 )
 
 var InvalidZoneErr = errors.New("Invalid zone selected: valid: 0 - 5")
@@ -81,6 +81,16 @@ func (c *Controller) ZoneOff(zone int) error {
 }
 
 //Increase Brightness
+func (c *Controller) AllBright() error {
+	return c.ZoneBright(0)
+}
+
+//Decrease Brightness
+func (c *Controller) AllDim() error {
+	return c.ZoneDim(0)
+}
+
+//Increase Brightness per zone
 func (c *Controller) ZoneBright(zone int) error {
 	//To control individual zone, send on command immidiately followed by bright
 	switch zone {
@@ -103,7 +113,7 @@ func (c *Controller) ZoneBright(zone int) error {
 	}
 }
 
-//Decrese Brightness
+//Decrese Brightness per zone
 func (c *Controller) ZoneDim(zone int) error {
 	//To control individual zone, send on command immidiately followed by bright
 	switch zone {
@@ -138,6 +148,7 @@ func (c *Controller) SetBrightness(zone int, brightness int) error {
 	}
 	//Dim it completely
 	for i := 0; i < 10; i++ {
+		time.Sleep(time.Millisecond * 100)
 		err := c.ZoneDim(zone)
 		if err != nil {
 			return err
@@ -145,6 +156,7 @@ func (c *Controller) SetBrightness(zone int, brightness int) error {
 	}
 	//Now bring it up one step at a time
 	for i := 0; i < brightness; i++ {
+		time.Sleep(time.Millisecond * 100)
 		err := c.ZoneBright(zone)
 		if err != nil {
 			return err
