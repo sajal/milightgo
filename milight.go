@@ -137,6 +137,52 @@ func (c *Controller) ZoneDim(zone int) error {
 	}
 }
 
+//Increase Warmth per zone
+func (c *Controller) ZoneWarm(zone int) error {
+	//To control individual zone, send on command immidiately followed by bright
+	switch zone {
+	case 0: //Zone 0 = all zones
+		return c.send([]byte{0x3E, 0x00, 0x55})
+	case 1:
+		c.ZoneOn(zone)
+		return c.send([]byte{0x3E, 0x00, 0x55})
+	case 2:
+		c.ZoneOn(zone)
+		return c.send([]byte{0x3E, 0x00, 0x55})
+	case 3:
+		c.ZoneOn(zone)
+		return c.send([]byte{0x3E, 0x00, 0x55})
+	case 4:
+		c.ZoneOn(zone)
+		return c.send([]byte{0x3E, 0x00, 0x55})
+	default:
+		return InvalidZoneErr
+	}
+}
+
+//Decrese Warmth per zone
+func (c *Controller) ZoneCold(zone int) error {
+	//To control individual zone, send on command immidiately followed by bright
+	switch zone {
+	case 0: //Zone 0 = all zones
+		return c.send([]byte{0x3F, 0x00, 0x55})
+	case 1:
+		c.ZoneOn(zone)
+		return c.send([]byte{0x3F, 0x00, 0x55})
+	case 2:
+		c.ZoneOn(zone)
+		return c.send([]byte{0x3F, 0x00, 0x55})
+	case 3:
+		c.ZoneOn(zone)
+		return c.send([]byte{0x3F, 0x00, 0x55})
+	case 4:
+		c.ZoneOn(zone)
+		return c.send([]byte{0x3F, 0x00, 0x55})
+	default:
+		return InvalidZoneErr
+	}
+}
+
 //Set the brightness of a zone. brightness can be 1 - 10.
 // This actually dims the bulb all the way down and then brings it up one at a time.
 // Have to do this nasty hack because the stupid controler wont tell us the current brightness, nor will it allow us to set it to a specific value.
@@ -164,5 +210,33 @@ func (c *Controller) SetBrightness(zone int, brightness int) error {
 		}
 	}
 	return nil
+}
 
+//Set the warmth of a zone. warmth can be 1 - 10.
+// This actually makes it cold the bulb all the way down and then brings it up one at a time.
+// Have to do this nasty hack because the stupid controler wont tell us the current warmth, nor will it allow us to set it to a specific value.
+func (c *Controller) SetWarmth(zone int, warmth int) error {
+	if warmth < 1 {
+		return InvalidBrightnessErr
+	}
+	if warmth > 10 {
+		return InvalidBrightnessErr
+	}
+	//Dim it completely
+	for i := 0; i < 10; i++ {
+		//time.Sleep(time.Millisecond * 100)
+		err := c.ZoneCold(zone)
+		if err != nil {
+			return err
+		}
+	}
+	//Now bring it up one step at a time
+	for i := 0; i < warmth; i++ {
+		//time.Sleep(time.Millisecond * 100)
+		err := c.ZoneWarm(zone)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }

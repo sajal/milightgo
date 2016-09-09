@@ -94,6 +94,36 @@ func main() {
 			},
 		},
 		{
+			Name:  "warm",
+			Usage: "Increase warmth",
+			Action: func(c *cli.Context) {
+				ip := c.GlobalString("ip")
+				check(ip)
+				zone := c.GlobalInt("zone")
+				println("ip: ", ip, "Zone: ", zone)
+				m := milight.NewController(ip)
+				err := m.ZoneWarm(zone)
+				if err != nil {
+					log.Fatal(err)
+				}
+			},
+		},
+		{
+			Name:  "cold",
+			Usage: "Decrease warmth",
+			Action: func(c *cli.Context) {
+				ip := c.GlobalString("ip")
+				check(ip)
+				zone := c.GlobalInt("zone")
+				println("ip: ", ip, "Zone: ", zone)
+				m := milight.NewController(ip)
+				err := m.ZoneCold(zone)
+				if err != nil {
+					log.Fatal(err)
+				}
+			},
+		},
+		{
 			Name:  "setbrightness",
 			Usage: "Set brightness (1 - 10)",
 			Action: func(c *cli.Context) {
@@ -113,6 +143,29 @@ func main() {
 					Name:  "level",
 					Value: 0,
 					Usage: "brightness level ( 1 - 10 )",
+				},
+			},
+		},
+		{
+			Name:  "setwarmth",
+			Usage: "Set setwarmth (1 - 10)",
+			Action: func(c *cli.Context) {
+				ip := c.GlobalString("ip")
+				check(ip)
+				zone := c.GlobalInt("zone")
+				warmth := c.Int("level")
+				println("ip: ", ip, "Zone: ", zone, "Warmth: ", warmth)
+				m := milight.NewController(ip)
+				err := m.SetWarmth(zone, warmth)
+				if err != nil {
+					log.Fatal(err)
+				}
+			},
+			Flags: []cli.Flag{
+				cli.IntFlag{
+					Name:  "level",
+					Value: 0,
+					Usage: "warmth level ( 1 - 10 )",
 				},
 			},
 		},
